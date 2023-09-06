@@ -1,0 +1,45 @@
+{
+  "name": "final-project-lhl-marketwatchapp",
+  "version": "1.0.0",
+  "description": "stock market watcher app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattrostad/Final-Project-LHL-MarketWatchApp.git"
+  },
+  "keywords": [
+    "stock",
+    "market",
+    "personalised",
+    "watchlist",
+    "real",
+    "time",
+    "stock",
+    "data",
+    "node.js",
+    "react"
+  ],
+  "author": "Roy Chijioke",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mattrostad/Final-Project-LHL-MarketWatchApp/issues"
+  },
+  "homepage": "https://github.com/mattrostad/Final-Project-LHL-MarketWatchApp#readme",
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.7",
+    "axios": "^1.5.0",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.11.3"
+  }
+}
