@@ -5,6 +5,7 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 const stocksRoute = require('./Routes/stocks')
+const newsRoute = require('./Routes/news')
 // const axios = require('axios')
 const db = require('./db/connection')
 
@@ -14,6 +15,10 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(passport.session());
 app.use(express.json())
 app.use('/stocks', stocksRoute)
+
+
+//News Route
+app.use('/news', newsRoute)
 
 // User Registration
 app.get('/', (req, res) => {
