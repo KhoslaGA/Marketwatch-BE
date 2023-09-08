@@ -102,8 +102,8 @@ router.get('/history/:symbol', async(req, res) => {
   // Fetch historical stock data for a specific symbol and send it to the client
   try {
     const symbol = req.params.symbol;
-    const apiKey = 'our_api_key'; // Replace with our actual API key
-    const apiUrl = `https://api.example.com/history/${symbol}?apiKey=${apiKey}`; // Replace with our actual API URL
+    const apiKey = 'Z4PLTHRx0WsPbfphqaCpPHlA3rombvDJ'; 
+    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/2023-07-17/2023-09-07?adjusted=true&sort=asc&limit=120&apiKey=${apiKey}`; 
 
     // Fetch historical stock data from the external API
     const response = await axios.get(apiUrl);
@@ -121,9 +121,9 @@ router.get('/compare/:symbols', async(req, res) => {
   // Compare performance of stocks based on provided symbols and time frame
   try {
     const symbolList = req.params.symbols.split(','); // Split the symbols into an array
-    const apiKey = 'our_api_key'; // Replace with our API key
-    const baseUrl = 'https://api.example.com/history'; // Replace with our API URL
-
+    const apiKey = 'Z4PLTHRx0WsPbfphqaCpPHlA3rombvDJ'; 
+    const baseUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/2023-07-17/2023-09-07?adjusted=true&sort=asc&limit=120&apiKey=${apiKey}`; 
+    
     // Fetch historical data for each symbol
     const historicalDataPromises = symbolList.map(symbol => {
       const apiUrl = `${baseUrl}/${symbol}?apiKey=${apiKey}`; // Adjust the URL structure based on our API

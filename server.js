@@ -1,11 +1,11 @@
-require('dotenv').config()
+
 const express = require('express');
 // const session = require('express-session');
 // const passport = require('passport');
 const app = express();
 const router = express.Router();
 const stocksRoute = require('./Routes/stocks')
-// const axios = require('axios')
+const axios = require('axios')
 const db = require('./db/connection')
 
 
