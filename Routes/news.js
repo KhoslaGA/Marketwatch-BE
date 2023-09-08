@@ -19,7 +19,7 @@ router.get("/:symbol", async (req, res) => {
 
   try {
     const response = await axios.request(options);
-    res.json(response.data.item.slice(0,5))
+    res.json(response.data.item.slice(0,3))
     console.log(response.data);
   } catch (error) {
     console.error(error);
