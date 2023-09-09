@@ -23,6 +23,7 @@ router.post('/signup', (req, res) => {
   if (!username || !email || !password) {
     // If any required field is missing, display an error message to the user
     return res.render('signup', { error: 'All fields are required' });
+    // res.json({})
   }
 
   const newUser = {
@@ -51,7 +52,6 @@ router.post('/login', (req, res) => {
 
   //Validate the input fields
   if (!email || !password) {
-    // return res.render('login', { error: 'Email and password are required' });
     res.json({error: 'Email and password are required'})
   }
 
@@ -66,8 +66,6 @@ router.post('/login', (req, res) => {
     return res.redirect('/dashboard'); 
   } else {
     // Failed login
-    // return 
-    // res.render('login', { error: 'Invalid email or password' });
     res.json({ error: 'Invalid email or password' })
 
   }

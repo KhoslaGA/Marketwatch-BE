@@ -28,9 +28,6 @@ router.get('/watchlist', async(req, res) => {
     // Fetch the user's watchlist data from the database 
     const userWatchlist = Watchlist.getUserWatchlist(req.session.user.id); // Authentication middleware might be needed, not sure
     
-    // we should ender the watchlist view and pass the watchlist data to it
-    // res.render('watchlist', { watchlist: userWatchlist });
-    // res.render('watchlist', { watchlist: userWatchlist });
     res.json({watchlist: userWatchlist})
   } catch (error) {
     console.error(error);
@@ -105,7 +102,7 @@ router.get('/history/:symbol', async(req, res) => {
   try {
     const symbol = req.params.symbol;
     const apiKey = 'Z4PLTHRx0WsPbfphqaCpPHlA3rombvDJ'; 
-    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/2023-07-17/2023-09-07?adjusted=true&sort=asc&limit=120&apiKey=${apiKey}`; 
+    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/2020-07-17/2023-09-07?adjusted=true&sort=asc&limit=120&apiKey=${apiKey}`; 
 
     // Fetch historical stock data from the external API
     const response = await axios.get(apiUrl);
