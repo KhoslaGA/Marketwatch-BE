@@ -26,10 +26,12 @@ router.post('/', (req, res) => {
 router.get('/watchlist', async(req, res) => {
   try {
     // Fetch the user's watchlist data from the database 
-    const userWatchlist = Watchlist.getUserWatchlist(req.user.id); // Authentication middleware might be needed, not sure
+    const userWatchlist = Watchlist.getUserWatchlist(req.session.user.id); // Authentication middleware might be needed, not sure
     
     // we should ender the watchlist view and pass the watchlist data to it
-    res.render('watchlist', { watchlist: userWatchlist });
+    // res.render('watchlist', { watchlist: userWatchlist });
+    // res.render('watchlist', { watchlist: userWatchlist });
+    res.json({watchlist: userWatchlist})
   } catch (error) {
     console.error(error);
     res.status(500).send('An error occurred while fetching the watchlist');
@@ -83,8 +85,8 @@ router.get('/stocks/:symbol', async(req, res) => {
   // Fetch real-time stock data for a specific symbol and send it to the client
   try {
     const symbol = req.params.symbol;
-    const apiKey = 'our_api_key'; // Replace with our actual API key
-    const apiUrl = `https://api.example.com/stocks/${symbol}?apiKey=${apiKey}`; // Replace with the actual API URL
+    const apiKey = 'Z4PLTHRx0WsPbfphqaCpPHlA3rombvDJ'; 
+    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/2023-07-17/2023-09-07?adjusted=true&sort=asc&limit=120&apiKey=${apiKey}`;
 
     // Fetch real-time stock data from the external API
     const response = await axios.get(apiUrl);

@@ -51,7 +51,8 @@ router.post('/login', (req, res) => {
 
   //Validate the input fields
   if (!email || !password) {
-    return res.render('login', { error: 'Email and password are required' });
+    // return res.render('login', { error: 'Email and password are required' });
+    res.json({error: 'Email and password are required'})
   }
 
   // Simulate user authentication
@@ -65,7 +66,10 @@ router.post('/login', (req, res) => {
     return res.redirect('/dashboard'); 
   } else {
     // Failed login
-    return res.render('login', { error: 'Invalid email or password' });
+    // return 
+    // res.render('login', { error: 'Invalid email or password' });
+    res.json({ error: 'Invalid email or password' })
+
   }
 });
 
