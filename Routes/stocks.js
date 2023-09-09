@@ -68,10 +68,9 @@ router.delete('/watchlist/:stockSymbol', async (req, res) => {
     const removed = Watchlist.removeFromWatchlist(userId, stockSymbol);
 
     if (removed) {
-      res.status(200).send('Stock removed from watchlist successfully.');
-    } else {
-      res.status(404).send('Stock not found in the watchlist.');
+      return res.status(200).send('Stock removed from watchlist successfully.');
     }
+    res.status(404).send('Stock not found in the watchlist.');
   } catch (error) {
     console.error(error);
     res.status(500).send('An error occurred while removing the stock from the watchlist.');
