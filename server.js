@@ -53,6 +53,13 @@ app.get('/db', async (req, res) => {
   })
 });
 
+// const setDB = (req, res, next) => {
+//   req.db = db;
+//   next()
+// }
+
+// app.use(setDB())
+
 app.post('/signup', (req, res) => {
   // for user registration logic
   const { username, email, password } = req.body;

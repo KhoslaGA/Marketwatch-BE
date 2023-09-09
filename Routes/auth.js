@@ -4,6 +4,7 @@ const passport = require('passport');
 const app = express();
 const router = express.Router();
 const axios = require('axios')
+const Db = require("../db/connection")
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -22,8 +23,8 @@ router.post('/signup', (req, res) => {
 // validation logic
   if (!username || !email || !password) {
     // If any required field is missing, display an error message to the user
-    return res.render('signup', { error: 'All fields are required' });
-    // res.json({})
+    // return res.render('signup', { error: 'All fields are required' });
+    res.json({error: 'All fields are required'})
   }
 
   const newUser = {
@@ -46,7 +47,7 @@ router.get('/login', (req, res) => {
   res.render('login');
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async(req, res) => {
   // Handle user login logic
   const { email, password } = req.body;
 
@@ -56,19 +57,16 @@ router.post('/login', (req, res) => {
   }
 
   // Simulate user authentication
-  const user = users.find(u => u.email === email && u.password === password);
-
-  if (user) {
-    // Successful login
-    // should we use a session or token here to indicate that the user is authenticated?
-    req.session.user = user; // not sure if this is necessary, cuz i might need to a package for this 
-    // Redirect to user dashboard or desired or homepage, depends on what we decide
-    return res.redirect('/dashboard'); 
-  } else {
-    // Failed login
-    res.json({ error: 'Invalid email or password' })
-
+  //const user = users.find(u => u.email === email && u.password === password);
+  const queryStr = `Select * from users WHERE email = $1;`;
+  const params = [email];
+  
+  const {rows} = await Db.query(queryStr, params);
+  const user = rows[0]
+  if (!user) {
+    return res.json({ error: 'Invalid email or password' })
   }
+  return res.status(200).json(user)
 });
 
 // User Logout

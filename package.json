@@ -4,7 +4,7 @@
   "description": "stock market watcher app",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "test": "npm run test"
   },
   "repository": {
@@ -43,5 +43,8 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
