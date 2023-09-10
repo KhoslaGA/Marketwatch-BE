@@ -17,24 +17,62 @@ router.get('/signup', (req, res) => {
   res.render('signup');
 });
 
-router.post('/signup', (req, res) => {
-  // for user registration logic
+// router.post('/signup', (req, res) => {
+//   // for user registration logic
+//   const { username, email, password } = req.body;
+// // validation logic
+//   if (!username || !email || !password) {
+//     // If any required field is missing, display an error message to the user
+//     // return res.render('signup', { error: 'All fields are required' });
+//     res.json({error: 'All fields are required'})
+//   }
+
+//   const newUser = {
+//     username,
+//     email,
+//     password
+//   };
+  
+//   res.redirect('/dashboard');
+// });
+
+router.post('/signup', async (req, res) => {
+  // Extract user registration data from the request body
   const { username, email, password } = req.body;
-// validation logic
+
+  // Validation logic to ensure all fields are provided
   if (!username || !email || !password) {
-    // If any required field is missing, display an error message to the user
-    // return res.render('signup', { error: 'All fields are required' });
-    res.json({error: 'All fields are required'})
+    return res.status(400).json({ error: 'All fields are required' });
   }
 
-  const newUser = {
-    username,
-    email,
-    password
-  };
-  
-  res.redirect('/dashboard');
+  // Check if the user with the provided email already exists
+  const queryStr = 'SELECT * FROM users WHERE email = $1;';
+  const params = [email];
+
+  try {
+    const { rows } = await Db.query(queryStr, params);
+    const existingUser = rows[0];
+
+    if (existingUser) {
+      return res.status(400).json({ error: 'User with this email already exists' });
+    }
+
+    // If the email is unique, proceed to create a new user
+    const insertQuery = 'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *;';
+    // const Password = await (password); // Implement password hashing
+
+    const newUser = [username, email, password];
+    const { rows: insertedUserRows } = await Db.query(insertQuery, newUser);
+    const registeredUser = insertedUserRows[0];
+
+    // You can send a success message or redirect to a login page
+    return res.status(201).json({ message: 'User registered successfully', user: registeredUser });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'An error occurred during registration' });
+  }
 });
+
 
 const users = [
   { email: 'user1@example.com', password: 'password123' },
