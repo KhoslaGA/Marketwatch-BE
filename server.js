@@ -1,5 +1,7 @@
 require('dotenv').config()
 const express = require('express');
+const cors = require('cors');
+
 // const session = require('express-session');
 // const passport = require('passport');
 const app = express();
@@ -8,13 +10,14 @@ const stocksRoute = require('./Routes/stocks')
 const newsRoute = require('./Routes/news')
 // const axios = require('axios')
 const db = require('./db/connection')
+app.use(cors());
 
 
 // app.set('view engine', 'ejs'); // Set the view engine to EJS
 app.use(express.urlencoded({ extended: true }));
 // app.use(passport.session());
-app.use(express.json())
-app.use('/stocks', stocksRoute)
+app.use(express.json());
+app.use('/stocks', stocksRoute);
 
 
 //News Route
@@ -27,6 +30,11 @@ app.get('/', (req, res) => {
     message: "Welcome Stock Market Watcher",
     date: new Date()
   })
+});
+
+app.get('/123', (req, res) => {
+  console.log(req, "Request logged")
+  return res.status(200)
 });
 
 app.get('/db', async (req, res) => {
@@ -56,6 +64,61 @@ app.post('/signup', (req, res) => {
 
   res.redirect('/dashboard');
 });
+
+app.get('/stock/:symbol', (req, res) => {
+  const symbol = req.params.symbol.toUpperCase();
+  const stock = stockData[symbol];
+
+  if (stock) {
+    res.json(stock);
+  } else {
+    res.status(404).json({ error: 'Stock not found' });
+  }
+});
+
+app.get('/stock/:symbol', async (req, res) => {
+  const symbol = req.params.symbol.toUpperCase();
+
+  try {
+    // Fetch stock data from Yahoo Finance API
+    const response = await axios.get(`https://yahoo-finance15.p.rapidapi.com/api/yahoo/quote/${symbol}`, {
+      headers: {
+        'X-RapidAPI-Host': 'yahoo-finance15.p.rapidapi.com',
+        'X-RapidAPI-Key': "976181ede8msh8db849df77064aep11246cjsn64c186ae1e1a",
+      },
+    });
+
+    const stockData = response.data;
+
+    if (!stockData || !stockData.symbol) {
+      res.status(404).json({ error: 'Stock not found' });
+      return;
+    }
+
+    // Extract relevant data (e.g., price, price change, 52-week high/low, market cap)
+    const price = stockData.regularMarketPrice;
+    const priceChange = stockData.regularMarketChange;
+    const week52High = stockData.fiftyTwoWeekHigh;
+    const week52Low = stockData.fiftyTwoWeekLow;
+    const marketCap = stockData.marketCap;
+
+    // Return the stock data
+    res.json({
+      symbol,
+      price,
+      priceChange,
+      week52High,
+      week52Low,
+      marketCap,
+    });
+
+  } catch (error) {
+    console.error('Error fetching stock data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 
 // const users = [
 //   { email: 'user1@example.com', password: 'password123' },
