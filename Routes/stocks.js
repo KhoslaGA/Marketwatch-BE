@@ -68,10 +68,9 @@ router.delete('/watchlist/:stockSymbol', async (req, res) => {
     const removed = Watchlist.removeFromWatchlist(userId, stockSymbol);
 
     if (removed) {
-      res.status(200).send('Stock removed from watchlist successfully.');
-    } else {
-      res.status(404).send('Stock not found in the watchlist.');
+      return res.status(200).send('Stock removed from watchlist successfully.');
     }
+    res.status(404).send('Stock not found in the watchlist.');
   } catch (error) {
     console.error(error);
     res.status(500).send('An error occurred while removing the stock from the watchlist.');
@@ -79,18 +78,27 @@ router.delete('/watchlist/:stockSymbol', async (req, res) => {
 });
 
 // Real-time Stock Data (assuming we have an external API)
-router.get('/stocks/:symbol', async(req, res) => {
+router.get('/:symbol', async(req, res) => {
   // Fetch real-time stock data for a specific symbol and send it to the client
   try {
     const symbol = req.params.symbol;
-    const apiKey = 'our_api_key'; // Replace with our actual API key
-    const apiUrl = `https://api.example.com/stocks/${symbol}?apiKey=${apiKey}`; // Replace with the actual API URL
+    const options = {
+      method: "GET",
+      url: `https://yahoo-finance15.p.rapidapi.com/api/yahoo/qu/quote/${symbol}`,
+      headers: {
+      "X-RapidAPI-Key":
+      process.env.RAPID_API_KEY,
+      "X-RapidAPI-Host": "yahoo-finance15.p.rapidapi.com",
+      },
+      };
+      
 
-    // Fetch real-time stock data from the external API
-    const response = await axios.get(apiUrl);
-
-    // Send the fetched data to the client
+      
+        const response = await axios.request(options);
+         // Send the fetched data to the client
     res.json(response.data);
+        console.log(response.data);
+      
   } catch (error) {
     console.error(error);
     res.status(500).send('An error occurred while fetching real-time stock data.');

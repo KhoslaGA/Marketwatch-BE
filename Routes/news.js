@@ -1,33 +1,29 @@
-const express = require('express');
-const passport = require('passport');
-const app = express();
+const express = require("express");
+const passport = require("passport");
 const router = express.Router();
-const axios = require('axios')
-
-
-app.use(express.urlencoded({ extended: true }));
-
-
+const axios = require("axios");
 
 // News and Analysis (assumes use of external API)
-router.get('/news/:symbol', async(req, res) => {
+router.get("/:symbol", async (req, res) => {
+  const symbol = req.params.symbol;
+
   // Fetch relevant news and analysis for a specific stock symbol and send it to the client
+  const options = {
+    method: "GET",
+    url: `https://yahoo-finance15.p.rapidapi.com/api/yahoo/ne/news/${symbol}`,
+    headers: {
+      "X-RapidAPI-Key": "976181ede8msh8db849df77064aep11246cjsn64c186ae1e1a",
+      "X-RapidAPI-Host": "yahoo-finance15.p.rapidapi.com",
+    },
+  };
+
   try {
-    const symbol = req.params.symbol;
-    const apiKey = 'our_api_key'; // Replace with our actual API key
-    const apiUrl = `https://api.example.com/news/${symbol}?apiKey=${apiKey}`; // Replace with the actual API URL
-
-    // Fetch news and analysis data from the external API
-    const response = await axios.get(apiUrl);
-
-    // Send the fetched data to the client
-    res.json(response.data);
+    const response = await axios.request(options);
+    res.json(response.data.item.slice(0,3))
+    console.log(response.data);
   } catch (error) {
     console.error(error);
-    res.status(500).send('An error occurred while fetching news and analysis data.');
   }
-
 });
-
 
 module.exports = router;
