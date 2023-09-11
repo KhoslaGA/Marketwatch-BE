@@ -17,25 +17,6 @@ router.get('/signup', (req, res) => {
   res.render('signup');
 });
 
-// router.post('/signup', (req, res) => {
-//   // for user registration logic
-//   const { username, email, password } = req.body;
-// // validation logic
-//   if (!username || !email || !password) {
-//     // If any required field is missing, display an error message to the user
-//     // return res.render('signup', { error: 'All fields are required' });
-//     res.json({error: 'All fields are required'})
-//   }
-
-//   const newUser = {
-//     username,
-//     email,
-//     password
-//   };
-  
-//   res.redirect('/dashboard');
-// });
-
 router.post('/signup', async (req, res) => {
   // Extract user registration data from the request body
   const { username, email, password } = req.body;
@@ -59,7 +40,6 @@ router.post('/signup', async (req, res) => {
 
     // If the email is unique, proceed to create a new user
     const insertQuery = 'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *;';
-    // const Password = await (password); // Implement password hashing
 
     const newUser = [username, email, password];
     const { rows: insertedUserRows } = await Db.query(insertQuery, newUser);
@@ -73,12 +53,6 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-
-const users = [
-  { email: 'user1@example.com', password: 'password123' },
-  { email: 'user2@example.com', password: 'secret456' },
-  { email: 'user3@example.com', password: 'mysecurepass' }
-];
 // User Login
 router.get('/login', (req, res) => {
   // Render the login form once it's created
@@ -95,7 +69,6 @@ router.post('/login', async(req, res) => {
   }
 
   // Simulate user authentication
-  //const user = users.find(u => u.email === email && u.password === password);
   const queryStr = `Select * from users WHERE email = $1;`;
   const params = [email];
   

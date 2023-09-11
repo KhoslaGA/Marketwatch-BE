@@ -1,7 +1,7 @@
 
 const express = require('express');
 const cors = require('cors');
-var cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session')
 
 // const session = require('express-session');
 // const passport = require('passport');

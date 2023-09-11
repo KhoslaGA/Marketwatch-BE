@@ -1,45 +1,69 @@
+const db = require("../db/connection");
 
+async function addToWatchlist(userId, stockSymbol) {
+  try {
+    // First, find the stock_id for the given stockSymbol from the stocks table
+    const stockQuery = 'SELECT id FROM stocks WHERE symbol = $1';
+    const stockValues = [stockSymbol];
+    const stockResult = await db.query(stockQuery, stockValues);
 
-// Simulated database to store watchlist data
-const watchlistDatabase = [];//it needs to be the real datbase 
+    if (stockResult.rows.length === 0) {
+      throw new Error('Stock not found');
+    }
 
-// Function to add a stock to the watchlist
-function addToWatchlist(userId, stockSymbol) {
-  // Check if the stock is already in the watchlist
-  const existingItem = watchlistDatabase.find(
-    (item) => item.userId === userId && item.stockSymbol === stockSymbol
-  );
+    const stockId = stockResult.rows[0].id;
 
-  if (existingItem) {
-    return false; // Stock already in the watchlist
+    // Now, insert the stock into the user's watchlist
+    const query = 'INSERT INTO user_watchlist (user_id, stock_id) VALUES ($1, $2) RETURNING *';
+    const values = [userId, stockId];
+
+    const result = await db.query(query, values);
+    return result.rows[0];
+  } catch (error) {
+    throw new Error('Error adding stock to watchlist: ' + error.message);
   }
-
-  // Add the stock to the watchlist
-  watchlistDatabase.push({ userId, stockSymbol });
-  return true; // Stock added to the watchlist
 }
 
-// Function to remove a stock from the watchlist
-function removeFromWatchlist(userId, stockSymbol) {
-  // Find the index of the stock in the watchlist
-  const index = watchlistDatabase.findIndex(
-    (item) => item.userId === userId && item.stockSymbol === stockSymbol
-  );
+async function removeFromWatchlist(userId, stockSymbol) {
+  try {
+    // First, find the stock_id for the given stockSymbol from the stocks table
+    const stockQuery = 'SELECT id FROM stocks WHERE symbol = $1';
+    const stockValues = [stockSymbol];
+    const stockResult = await db.query(stockQuery, stockValues);
 
-  if (index === -1) {
-    return false; // Stock not found in the watchlist
+    if (stockResult.rows.length === 0) {
+      throw new Error('Stock not found');
+    }
+
+    const stockId = stockResult.rows[0].id;
+
+    // Now, delete the stock from the user's watchlist
+    const query = 'DELETE FROM user_watchlist WHERE user_id = $1 AND stock_id = $2';
+    const values = [userId, stockId];
+
+    const result = await db.query(query, values);
+    return result.rowCount > 0; // Return true if a row was deleted, false if not found
+  } catch (error) {
+    throw new Error('Error removing stock from watchlist: ' + error.message);
   }
-
-  // Remove the stock from the watchlist
-  watchlistDatabase.splice(index, 1);
-  return true; // Stock removed from the watchlist
 }
 
-// Function to get the user's watchlist
-function getUserWatchlist(userId) {
-  // Filter watchlist items by user ID
-  const userWatchlist = watchlistDatabase.filter((item) => item.userId === userId);
-  return userWatchlist.map((item) => item.stockSymbol);
+async function getUserWatchlist(userId) {
+  try {
+    // Fetch the list of stock symbols in the user's watchlist
+    const query = `
+      SELECT s.symbol
+      FROM user_watchlist uw
+      JOIN stocks s ON uw.stock_id = s.id
+      WHERE uw.user_id = $1
+    `;
+    const values = [userId];
+
+    const result = await db.query(query, values);
+    return result.rows.map((item) => item.symbol);
+  } catch (error) {
+    throw new Error('Error fetching user watchlist: ' + error.message);
+  }
 }
 
 module.exports = {
