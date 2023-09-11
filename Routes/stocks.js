@@ -115,6 +115,9 @@ router.post('/watchlist/add', async (req, res) => {
 });
 
 
+
+
+
 // Remove stock from user watchlist
 router.delete('/watchlist/remove/:user_id/:stock_id', async (req, res) => {
   try {
@@ -139,12 +142,13 @@ router.delete('/watchlist/remove/:user_id/:stock_id', async (req, res) => {
 
 
 // Real-time Stock Data (assuming we have an external API)
-router.get('/stocks/:symbol', async(req, res) => {
+router.get('/:symbol', async(req, res) => {
   // Fetch real-time stock data for a specific symbol and send it to the client
   try {
-    const stock_id = req.params.stock_id;
+    const symbol = req.params.symbol;
+    console.log("testing", symbol)
     const apiKey = 'Z4PLTHRx0WsPbfphqaCpPHlA3rombvDJ'; 
-    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${stock_id}/range/1/day/2023-07-17/2023-09-07?adjusted=true&sort=asc&limit=120&apiKey=${apiKey}`;
+    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/2023-01-09/2023-01-09?adjusted=true&sort=asc&limit=120&apiKey=${apiKey}`
 
     // Fetch real-time stock data from the external API
     const response = await axios.get(apiUrl);
@@ -157,24 +161,7 @@ router.get('/stocks/:symbol', async(req, res) => {
   }
 });
 
-// Historical Data (assumes use of external API)
-router.get('/history/:symbol', async(req, res) => {
-  // Fetch historical stock data for a specific symbol and send it to the client
-  try {
-    const symbol = req.params.symbol;
-    const apiKey = 'Z4PLTHRx0WsPbfphqaCpPHlA3rombvDJ'; 
-    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${stock_id}/range/1/day/2020-07-17/2023-09-07?adjusted=true&sort=asc&limit=120&apiKey=${apiKey}`; 
 
-    // Fetch historical stock data from the external API
-    const response = await axios.get(apiUrl);
-
-    // Send the fetched data to the client
-    res.json(response.data);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('An error occurred while fetching historical stock data.');
-  }
-});
 
 // Performance Comparisons (assumes watchlist comparison feature)
 router.get('/compare/:symbols', async(req, res) => {
