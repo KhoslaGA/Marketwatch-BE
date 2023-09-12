@@ -1,16 +1,26 @@
-require('dotenv').config()
+
 const express = require('express');
 const cors = require('cors');
+const cookieSession = require('cookie-session')
 
 // const session = require('express-session');
 // const passport = require('passport');
 const app = express();
 const router = express.Router();
 const stocksRoute = require('./Routes/stocks')
+const authRoute = require('./Routes/auth')
+const axios = require('axios')
 const newsRoute = require('./Routes/news')
 // const axios = require('axios')
 const db = require('./db/connection')
 app.use(cors());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['hello'],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
 
 // app.set('view engine', 'ejs'); // Set the view engine to EJS
@@ -18,6 +28,8 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(passport.session());
 app.use(express.json());
 app.use('/stocks', stocksRoute);
+app.use('/auth', authRoute);
+
 
 
 //News Route
@@ -46,6 +58,13 @@ app.get('/db', async (req, res) => {
     users: rows
   })
 });
+
+// const setDB = (req, res, next) => {
+//   req.db = db;
+//   next()
+// }
+
+// app.use(setDB())
 
 app.post('/signup', (req, res) => {
   // for user registration logic
