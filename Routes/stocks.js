@@ -146,17 +146,21 @@ router.get('/:symbol', async(req, res) => {
   // Fetch real-time stock data for a specific symbol and send it to the client
   try {
     const symbol = req.params.symbol;
-    console.log("testing", symbol)
-    const apiKey = 'Z4PLTHRx0WsPbfphqaCpPHlA3rombvDJ'; 
-    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/2023-01-09/2023-01-09?adjusted=true&sort=asc&limit=120&apiKey=${apiKey}`
-
-    
+    const options = {
+      method: "GET",
+      url: `https://yahoo-finance15.p.rapidapi.com/api/yahoo/qu/quote/${symbol}`,
+      headers: {
+      "X-RapidAPI-Key":
+      process.env.RAPID_API_KEY,
+      "X-RapidAPI-Host": "yahoo-finance15.p.rapidapi.com",
+      },
+      };
       
-        // Fetch real-time stock data from the external API
-    const response = await axios.get(apiUrl);
-     // Send the fetched data to the client
+
+       const response = await axios.request(options);
+         // Send the fetched data to the client
+         console.log(response.data); 
     res.json(response.data);
-        console.log(response.data);
       
   } catch (error) {
     console.error(error);
