@@ -10,6 +10,8 @@ const router = express.Router();
 const stocksRoute = require('./Routes/stocks')
 const authRoute = require('./Routes/auth')
 const axios = require('axios')
+const newsRoute = require('./Routes/news')
+// const axios = require('axios')
 const db = require('./db/connection')
 app.use(cors());
 app.use(cookieSession({
@@ -28,6 +30,10 @@ app.use(express.json());
 app.use('/stocks', stocksRoute);
 app.use('/auth', authRoute);
 
+
+
+//News Route
+app.use('/news', newsRoute)
 
 // User Registration
 app.get('/', (req, res) => {

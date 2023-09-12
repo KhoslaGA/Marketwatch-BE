@@ -150,11 +150,14 @@ router.get('/:symbol', async(req, res) => {
     const apiKey = 'Z4PLTHRx0WsPbfphqaCpPHlA3rombvDJ'; 
     const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/2023-01-09/2023-01-09?adjusted=true&sort=asc&limit=120&apiKey=${apiKey}`
 
-    // Fetch real-time stock data from the external API
+    
+      
+        // Fetch real-time stock data from the external API
     const response = await axios.get(apiUrl);
-
-    // Send the fetched data to the client
+     // Send the fetched data to the client
     res.json(response.data);
+        console.log(response.data);
+      
   } catch (error) {
     console.error(error);
     res.status(500).send('An error occurred while fetching real-time stock data.');
