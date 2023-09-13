@@ -61,21 +61,25 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async(req, res) => {
   // Handle user login logic
-  const { email, password } = req.body;
+  const { username, password } = req.body;
+  console.log(username)
+  console.log(password)
+
 
   //Validate the input fields
-  if (!email || !password) {
-    res.json({error: 'Email and password are required'})
+  if (!username || !password) {
+    res.json({error: 'Username and password are required'})
   }
 
   // Simulate user authentication
-  const queryStr = `Select * from users WHERE email = $1;`;
-  const params = [email];
+  const queryStr = `Select * from users WHERE username = $1;`;
+  const params = [username];
   
   const {rows} = await Db.query(queryStr, params);
   const user = rows[0]
+console.log(user)
   if (!user) {
-    return res.json({ error: 'Invalid email or password' })
+    return res.json({ error: 'Invalid username or password' })
   }
   return res.status(200).json(user)
 });
